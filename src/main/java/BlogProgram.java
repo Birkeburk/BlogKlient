@@ -23,19 +23,19 @@ public class BlogProgram {
 
             switch (userChoice) {
                 case 1:
-                    createBlogPost();
+                    createAPost();
                     break;
                 case 2:
-                    deleteOneBlogPost();
+                    deleteAPost();
                     break;
                 case 3:
-                    updateOneBlogPost();
+                    updateAPost();
                     break;
                 case 4:
-                    viewAllBlogPosts();
+                    viewAllPosts();
                     break;
                 case 5:
-                    viewOneBlogPost();
+                    viewAPost();
                     break;
                 case 6:
                     programRunning = false;
@@ -44,7 +44,7 @@ public class BlogProgram {
         }
     }
 
-    public void viewAllBlogPosts() {
+    public void viewAllPosts() {
         BlogPost[] blogPosts = myApiClient.listBlogPosts();
 
         if (blogPosts.length > 0) {
@@ -58,8 +58,7 @@ public class BlogProgram {
             System.out.println("You dont have any blog posts");
         }
     }
-
-    public void viewOneBlogPost() {
+    public void viewAPost() {
         BlogPost[] blogPosts = myApiClient.listBlogPosts();
 
         System.out.println("Enter which post you would like to view");
@@ -79,7 +78,7 @@ public class BlogProgram {
             }
         }
     }
-    public void updateOneBlogPost() {
+    public void updateAPost() {
         BlogPost[] blogPosts = myApiClient.listBlogPosts();
 
         System.out.println("Enter which post you would like to edit!");
@@ -110,7 +109,8 @@ public class BlogProgram {
             }
         }
     }
-    public void deleteOneBlogPost() {
+    public void deleteAPost() {
+        System.out.println("=========================================");
         System.out.println("Which blog post would you like to delete?");
         System.out.print("[id]> ");
 
@@ -124,7 +124,8 @@ public class BlogProgram {
             System.out.println("Something went wrong trying to delete your post!");
         }
     }
-    public void createBlogPost() {
+    public void createAPost() {
+        System.out.println("===========");
         System.out.println("Enter title");
         System.out.print("[...]> ");
         String title = getUserString();
