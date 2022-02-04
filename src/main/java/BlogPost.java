@@ -23,7 +23,7 @@ public class BlogPost implements Jsonable {
         }
 
         @Override
-        public String getKey(){
+        public String getKey() {
             return this.name().toLowerCase();
         }
 
@@ -33,7 +33,7 @@ public class BlogPost implements Jsonable {
         }
     }
 
-    public BlogPost(){
+    public BlogPost() {
 
     }
 
@@ -48,13 +48,15 @@ public class BlogPost implements Jsonable {
         this.body = body;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return this.title;
     }
-    public String getBody(){
+
+    public String getBody() {
         return this.body;
     }
-    public int getID(){
+
+    public int getID() {
         return this.id;
     }
 
@@ -73,7 +75,7 @@ public class BlogPost implements Jsonable {
     public void toJson(final Writer writable) throws IOException {
         try {
             final JsonObject json = new JsonObject();
-            json.put(keys.TITLE.getKey(), this. getTitle());
+            json.put(keys.TITLE.getKey(), this.getTitle());
             json.put(keys.BODY.getKey(), this.getBody());
             json.put(keys.ID.getKey(), this.getID());
             json.toJson(writable);
@@ -81,6 +83,7 @@ public class BlogPost implements Jsonable {
             System.out.println("Exception: " + e);
         }
     }
+
     @Override
     public String toString() {
         return "BlogPost{" +

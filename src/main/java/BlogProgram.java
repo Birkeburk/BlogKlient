@@ -3,21 +3,25 @@ import java.util.Scanner;
 public class BlogProgram {
     private ApiClient myApiClient;
 
+    //Konstruktor som skapar ett objekt av ApiClient classen med vår url
     public BlogProgram() {
         myApiClient = new ApiClient("http://127.0.0.1:8080/api/v1/blog");
     }
 
+    //Metod för att starta programmet
     public void start() {
         boolean programRunning = true;
 
         while (programRunning) {
-            System.out.println("[1] Make a new post");
+            System.out.println(ConsoleColors.BLACK_BOLD + "======================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.GREEN_BOLD + "[1] Make a new post");
             System.out.println("[2] Delete a post");
             System.out.println("[3] Update a post");
             System.out.println("[4] View all posts");
             System.out.println("[5] View specific post");
-            System.out.println("[6] Exit program");
-            System.out.println("[?]> ");
+            System.out.println("[6] Exit program" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.BLACK_BOLD + "======================");
+            System.out.print(ConsoleColors.GREEN_BOLD + "[?]> " + ConsoleColors.RESET);
 
             int userChoice = getUserInt();
 
@@ -44,106 +48,97 @@ public class BlogProgram {
         }
     }
 
+    //Metod för att visa alla blog inlägg
     public void viewAllPosts() {
         BlogPost[] blogPosts = myApiClient.listBlogPosts();
 
         if (blogPosts.length > 0) {
             for (int i = 0; i < blogPosts.length; i++) {
-                String title = blogPosts[i].title;
-                String body = blogPosts[i].body;
-                System.out.println(title + "\n");
-                System.out.println(body + "\n\n");
+                System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
+                System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", blogPosts[i].id, blogPosts[i].title, blogPosts[i].body + ConsoleColors.RESET);
             }
         } else {
-            System.out.println("You dont have any blog posts");
+            System.out.println(ConsoleColors.BLACK_BOLD + "===============================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED_BOLD + "You don't have any posts at this point in time!" + ConsoleColors.RESET);
         }
     }
-    public void viewAPost() {
-        BlogPost[] blogPosts = myApiClient.listBlogPosts();
 
-        System.out.println("Enter which post you would like to view");
-        System.out.print("[id]> ");
+    //Metod för att visa ett blog inlägg
+    public void viewAPost() {
+        System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD + "Enter which post you would like to view!");
+        System.out.print("[id]> " + ConsoleColors.RESET);
 
         int id = getUserInt();
 
-        if (blogPosts.length > 0) {
-            for (int i = 0; i < blogPosts.length; i++) {
-                if (id == blogPosts[i].getID()) {
-                    String title = blogPosts[i].title;
-                    String body = blogPosts[i].body;
-                    System.out.println("Title: " + title + "\n");
-                    System.out.println("Body: " + body + "\n\n");
-                    break;
-                }
-            }
-        }
-    }
-    public void updateAPost() {
-        BlogPost[] blogPosts = myApiClient.listBlogPosts();
+        BlogPost fetchedPost = myApiClient.viewBlogPost(id);
 
-        System.out.println("Enter which post you would like to edit!");
-        System.out.print("[id]> ");
-
-        int userChoice = getUserInt();
-
-        for (int i = 0; i < blogPosts.length; i++){
-            if(userChoice == blogPosts[i].getID()){
-                System.out.println("Enter your post title!");
-                System.out.print("[...]> ");
-                String title = getUserString();
-
-                System.out.println("Enter your new post body!");
-                System.out.println("[...]> ");
-                String body = getUserString();
-
-                BlogPost updatedPost = new BlogPost(userChoice, title, body);
-
-                boolean successful = myApiClient.updateBlogPost(updatedPost, userChoice);
-
-                if(successful) {
-                    System.out.println("Your post has been updated!");
-                } else {
-                    System.out.println("Something went wrong trying to update your post!");
-                }
-
-            }
-        }
-    }
-    public void deleteAPost() {
-        System.out.println("=========================================");
-        System.out.println("Which blog post would you like to delete?");
-        System.out.print("[id]> ");
-
-        int userChoice = getUserInt();
-
-        boolean successful = myApiClient.deleteBlogPost(userChoice);
-
-        if(successful) {
-            System.out.println("Your post has been deleted!");
+        if (fetchedPost != null) {
+            System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
+            System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", fetchedPost.getID(), fetchedPost.getTitle(), fetchedPost.getBody() + ConsoleColors.RESET);
         } else {
-            System.out.println("Something went wrong trying to delete your post!");
+            System.out.println(ConsoleColors.BLACK_BOLD + "===================================================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED_BOLD + "Couldn't display post with ID[" + id + "] because it doesn't exist!" + ConsoleColors.RESET);
         }
+
     }
-    public void createAPost() {
-        System.out.println("===========");
-        System.out.println("Enter title");
-        System.out.print("[...]> ");
+
+    //Metod för att uppdatera ett blog inlägg
+    public void updateAPost() {
+        System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD + "Enter which post you would like to edit!");
+        System.out.print("[id]> " + ConsoleColors.RESET);
+
+        int userChoice = getUserInt();
+
+        System.out.println(ConsoleColors.GREEN_BOLD + "=====================" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD + "Enter your new title!");
+        System.out.print("[...]> " + ConsoleColors.RESET);
         String title = getUserString();
 
-        System.out.println("Enter body");
-        System.out.println("[...]> ");
+        System.out.println(ConsoleColors.BLACK_BOLD + "====================" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD + "Enter your new body!");
+        System.out.print("[...]> " + ConsoleColors.RESET);
+        String body = getUserString();
+
+        BlogPost updatedPost = new BlogPost(userChoice, title, body);
+
+        myApiClient.updateBlogPost(updatedPost, userChoice);
+    }
+
+    //Metod för att radera ett blog inlägg
+    public void deleteAPost() {
+        System.out.println(ConsoleColors.BLACK_BOLD + "=========================================" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD + "Which blog post would you like to delete?");
+        System.out.print("[id]> " + ConsoleColors.RESET);
+
+        int userChoice = getUserInt();
+
+        myApiClient.deleteBlogPost(userChoice);
+
+    }
+
+    //Metod för att skapa ett blog inlägg
+    public void createAPost() {
+        System.out.println(ConsoleColors.BLACK_BOLD + "===========" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD + "Enter title");
+        System.out.print("[...]> " + ConsoleColors.RESET);
+
+        String title = getUserString();
+
+        System.out.println(ConsoleColors.BLACK_BOLD + "==========" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD + "Enter body");
+        System.out.print("[...]> " + ConsoleColors.RESET);
+
         String body = getUserString();
 
         BlogPost newBlogPost = new BlogPost(title, body);
 
-        boolean successful = myApiClient.createBlogPost(newBlogPost);
+        myApiClient.createBlogPost(newBlogPost);
 
-        if (successful) {
-            System.out.println("Your post has been successfully uploaded!");
-        } else {
-            System.out.println("Something went wrong trying to upload your post!");
-        }
     }
+
+    //Metod för att at emot en string av användaren
     public String getUserString() {
         Scanner myScanner = new Scanner(System.in);
 
@@ -151,7 +146,6 @@ public class BlogProgram {
 
         while (true) {
             try {
-                System.out.print("> ");
                 myString = myScanner.nextLine();
                 break;
             } catch (Exception e) {
@@ -162,6 +156,8 @@ public class BlogProgram {
 
         return myString;
     }
+
+    //Metod för att ta emot en integer av användaren
     public int getUserInt() {
         Scanner myScanner = new Scanner(System.in);
 
@@ -169,7 +165,6 @@ public class BlogProgram {
 
         while (true) {
             try {
-                System.out.print("> ");
                 myInteger = Integer.parseInt(myScanner.nextLine());
                 break;
             } catch (Exception e) {
