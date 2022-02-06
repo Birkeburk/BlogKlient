@@ -1,4 +1,5 @@
 //Dessa paket används för att skriva från och till Http-anslutningar
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -41,7 +42,7 @@ public class ApiClient {
             if (status == 200) {
                 System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
                 System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully deleted!" + ConsoleColors.RESET);
-            } else if (status == 404){
+            } else if (status == 404) {
                 System.out.println(ConsoleColors.BLACK_BOLD + "=================================================" + ConsoleColors.RESET);
                 System.out.println(ConsoleColors.RED_BOLD + "Couldn't delete post, because post doesn't exist!" + ConsoleColors.RESET);
             }
@@ -85,7 +86,7 @@ public class ApiClient {
                     reader.close();
                 }
             } else {
-                //Läser in information från vår connection och skriver över det och skapar ett objekt
+                //Läser in information från vår connection och skriver över det
                 if (connection.getInputStream() != null) {
                     reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     while ((line = reader.readLine()) != null) {
@@ -97,7 +98,18 @@ public class ApiClient {
             String jsonStr = responseContent.toString();
 
             ObjectMapper mapper = new ObjectMapper();
+
             blogPosts = mapper.readValue(jsonStr, BlogPost[].class);
+
+            if (blogPosts.length > 0) {
+                for (int i = 0; i < blogPosts.length; i++) {
+                    System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
+                    System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", blogPosts[i].id, blogPosts[i].title, blogPosts[i].body + ConsoleColors.RESET);
+                }
+            } else {
+                System.out.println(ConsoleColors.BLACK_BOLD + "===============================================" + ConsoleColors.RESET);
+                System.out.println(ConsoleColors.RED_BOLD + "You don't have any posts at this point in time!" + ConsoleColors.RESET);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -129,20 +141,27 @@ public class ApiClient {
             //Används en int för att ta emot en response-code som bestämmer om allt gick bra eller om ett fel inträffade.
             int status = connection.getResponseCode();
 
-            if (status >= 300) {
-                return null;
-            } else {
+            if (status == 200) {
                 //Läser in information från vår connection och skriver över det och skapar ett objekt
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 while ((line = reader.readLine()) != null) {
                     responseContent.append(line);
                 }
                 reader.close();
+            } else {
+                System.out.println(ConsoleColors.BLACK_BOLD + "===================================================================" + ConsoleColors.RESET);
+                System.out.println(ConsoleColors.RED_BOLD + "Couldn't display post with ID[" + id + "] because it doesn't exist!" + ConsoleColors.RESET);
+                return null;
             }
             String jsonStr = responseContent.toString();
 
             ObjectMapper mapper = new ObjectMapper();
             fetchedPost = mapper.readValue(jsonStr, BlogPost.class);
+
+
+            System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
+            System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", fetchedPost.getID(), fetchedPost.getTitle(), fetchedPost.getBody() + ConsoleColors.RESET);
+
         } catch (Exception e) {
             System.out.println("Exception: " + e);
         } finally {
@@ -179,7 +198,7 @@ public class ApiClient {
             if (status == 201) {
                 System.out.println(ConsoleColors.BLACK_BOLD + "=========================================" + ConsoleColors.RESET);
                 System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully uploaded!" + ConsoleColors.RESET);
-            } else if(status == 400){
+            } else if (status == 400) {
                 System.out.println(ConsoleColors.BLACK_BOLD + "=========================================================" + ConsoleColors.RESET);
                 System.out.println(ConsoleColors.RED_BOLD + "Couldn't create this post, missing mandatory information!" + ConsoleColors.RESET);
             }

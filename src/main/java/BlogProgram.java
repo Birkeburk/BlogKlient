@@ -50,17 +50,8 @@ public class BlogProgram {
 
     //Metod för att visa alla blog inlägg
     public void viewAllPosts() {
-        BlogPost[] blogPosts = myApiClient.listBlogPosts();
+        myApiClient.listBlogPosts();
 
-        if (blogPosts.length > 0) {
-            for (int i = 0; i < blogPosts.length; i++) {
-                System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
-                System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", blogPosts[i].id, blogPosts[i].title, blogPosts[i].body + ConsoleColors.RESET);
-            }
-        } else {
-            System.out.println(ConsoleColors.BLACK_BOLD + "===============================================" + ConsoleColors.RESET);
-            System.out.println(ConsoleColors.RED_BOLD + "You don't have any posts at this point in time!" + ConsoleColors.RESET);
-        }
     }
 
     //Metod för att visa ett blog inlägg
@@ -71,16 +62,7 @@ public class BlogProgram {
 
         int id = getUserInt();
 
-        BlogPost fetchedPost = myApiClient.viewBlogPost(id);
-
-        if (fetchedPost != null) {
-            System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
-            System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", fetchedPost.getID(), fetchedPost.getTitle(), fetchedPost.getBody() + ConsoleColors.RESET);
-        } else {
-            System.out.println(ConsoleColors.BLACK_BOLD + "===================================================================" + ConsoleColors.RESET);
-            System.out.println(ConsoleColors.RED_BOLD + "Couldn't display post with ID[" + id + "] because it doesn't exist!" + ConsoleColors.RESET);
-        }
-
+        myApiClient.viewBlogPost(id);
     }
 
     //Metod för att uppdatera ett blog inlägg
@@ -115,7 +97,6 @@ public class BlogProgram {
         int userChoice = getUserInt();
 
         myApiClient.deleteBlogPost(userChoice);
-
     }
 
     //Metod för att skapa ett blog inlägg
@@ -135,7 +116,6 @@ public class BlogProgram {
         BlogPost newBlogPost = new BlogPost(title, body);
 
         myApiClient.createBlogPost(newBlogPost);
-
     }
 
     //Metod för att at emot en string av användaren
