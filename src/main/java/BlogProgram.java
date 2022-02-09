@@ -73,7 +73,7 @@ public class BlogProgram {
 
         BlogPost myPost = myApiClient.viewBlogPost(id);
 
-        if(myPost != null) {
+        if (myPost != null) {
             System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
             System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", myPost.getID(), myPost.getTitle(), myPost.getBody() + ConsoleColors.RESET);
         } else {
@@ -104,7 +104,7 @@ public class BlogProgram {
 
         boolean successful = myApiClient.updateBlogPost(updatedPost, userChoice);
 
-        if(successful) {
+        if (successful) {
             System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully updated!" + ConsoleColors.RESET);
         } else {
@@ -122,7 +122,7 @@ public class BlogProgram {
 
         boolean successful = myApiClient.deleteBlogPost(userChoice);
 
-        if(successful) {
+        if (successful) {
             System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully deleted!" + ConsoleColors.RESET);
         } else {
@@ -149,7 +149,7 @@ public class BlogProgram {
 
         boolean successful = myApiClient.createBlogPost(newBlogPost);
 
-        if(successful) {
+        if (successful) {
             System.out.println(ConsoleColors.BLACK_BOLD + "=========================================" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully uploaded!" + ConsoleColors.RESET);
         } else {
