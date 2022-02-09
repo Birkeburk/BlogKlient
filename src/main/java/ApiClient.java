@@ -31,16 +31,17 @@ public class ApiClient {
         boolean success = false;
 
         try {
-            //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna radera ett blog inlägg
+            //En url skapas
             URL url = new URL(apiAdress + target);
-
+            //Öppnar en connection mellan vår klient och server med hjälp av vår url
             connection = (HttpURLConnection) url.openConnection();
+            //Sätter RequestMethod till "DELETE" för att kunna ta bort från servern
             connection.setRequestMethod("DELETE");
 
-
-            //Används en int för att ta emot en response-code som bestämmer om allt gick bra eller om ett fel inträffade
+            //Tar emot en statuskod från servern och sparar den i status
             int status = connection.getResponseCode();
 
+            //Kollar om statuskoden är OK, om ja så returneras true annars false
             if (status == 200) {
                 success = true;
             }
@@ -59,18 +60,18 @@ public class ApiClient {
         //Sträng för att kunna slutföra "url"
         String target = "/list";
 
-
         BufferedReader reader;
         String line;
         StringBuilder responseContent = new StringBuilder();
 
         try {
-            //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna lista alla blog inlägg
-            //Sätter RequestProperty till att ta emot json data med utf-8 som teckenuppsättning
+            //Skapar en url
             URL url = new URL(apiAdress + target);
-
+            //Öppnar en connection mellan vår klient och server med hjälp av vår url
             connection = (HttpURLConnection) url.openConnection();
+            //Sätter RequestMethod till "GET" för att kunna ta emot information från servern
             connection.setRequestMethod("GET");
+            //Bestämmer att det är json data som ska tas emot
             connection.setRequestProperty("accept", "application/json");
 
             //Används en int för att ta emot en response-code som bestämmer om allt gick bra eller om ett fel inträffade.
@@ -85,7 +86,7 @@ public class ApiClient {
                     reader.close();
                 }
             } else {
-                //Läser in information från vår connection och skriver över det
+                //Läser in information från vår connection och skriver över det till responseContent
                 if (connection.getInputStream() != null) {
                     reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     while ((line = reader.readLine()) != null) {
@@ -94,10 +95,11 @@ public class ApiClient {
                     reader.close();
                 }
             }
+            //Skriver om json data i responseContent till vanlig data
             String jsonStr = responseContent.toString();
-
+            //Skapar en mapper
             ObjectMapper mapper = new ObjectMapper();
-
+            //Använder vår mapper för att göra om json data till ett java objekt
             blogPosts = mapper.readValue(jsonStr, BlogPost[].class);
 
         } catch (Exception e) {
@@ -120,19 +122,20 @@ public class ApiClient {
         StringBuilder responseContent = new StringBuilder();
 
         try {
-            //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna lista ett blog inlägg
-            //Sätter RequestProperty till att ta emot json data med utf-8 som teckenuppsättning
+            //Skapar en url
             URL url = new URL(apiAdress + target);
-
+            //Öppnar en connection mellan vår klient och server med hjälp av vår url
             connection = (HttpURLConnection) url.openConnection();
+            //Sätter RequestMethod till "GET" för att kunna ta emot information från servern
             connection.setRequestMethod("GET");
+            //Bestämmer att det är json data som ska tas emot
             connection.setRequestProperty("accept", "application/json");
 
             //Används en int för att ta emot en response-code som bestämmer om allt gick bra eller om ett fel inträffade.
             int status = connection.getResponseCode();
 
             if (status == 200) {
-                //Läser in information från vår connection och skriver över det och skapar ett objekt
+                //Läser in information från vår connection och skriver över det till responseContent
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 while ((line = reader.readLine()) != null) {
                     responseContent.append(line);
@@ -141,9 +144,11 @@ public class ApiClient {
             } else {
                 return null;
             }
+            //Skriver om json data i responseContent till vanlig data
             String jsonStr = responseContent.toString();
-
+            //Skapar en mapper
             ObjectMapper mapper = new ObjectMapper();
+            //Använder vår mapper för att göra om json data till ett java objekt
             fetchedPost = mapper.readValue(jsonStr, BlogPost.class);
 
         } catch (Exception e) {
@@ -162,25 +167,28 @@ public class ApiClient {
         boolean success = false;
 
         try {
-            //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna skapa ett blogg inlägg
-            //Sätter RequestProperty till json data med utf-8 som teckenuppsättning, och säger att på vår connection ska vi ha en output
+            //Skapar en url
             URL url = new URL(apiAdress + target);
-
+            //Öppnar en connection mellan vår klient och server med hjälp av vår url
             connection = (HttpURLConnection) url.openConnection();
+            //Sätter RequestMethod till "POST" för att kunna skapa ett inlägg med ändringar i meddelande bodyn
             connection.setRequestMethod("POST");
+            //Bestämmer att det är json data som ska skickas
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            //Bestämmer att vi ska ha en output på vår connection
             connection.setDoOutput(true);
 
-            //Skapar en output stream, gör om vår post till Json sen Bytes och skriver det till vår connection
+            //Skapar en output stream till vår connection, gör om vår post till Json sen Bytes och sparar det i en Array av bytes
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = newBlogPost.toJson().getBytes(StandardCharsets.UTF_8);
-
+                // Skriver vår input till vår connection
                 os.write(input, 0, input.length);
             }
 
-            //Används en int för att ta emot en response-code som bestämmer om allt gick bra eller om ett fel inträffade.
+            //Tar emot en statuskod från servern och sparar den i status
             int status = connection.getResponseCode();
 
+            //Kollar om statuskoden är CREATED, om ja så returneras true annars false
             if (status == 201) {
                 success = true;
             }
@@ -201,29 +209,31 @@ public class ApiClient {
         boolean success = false;
 
         try {
-            //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna uppdatera ett blog inlägg
-            //Sätter RequestProperty till json data med utf-8 som teckenuppsättning, och säger att på vår connection ska vi ha en output
+            //Skapar en url
             URL url = new URL(apiAdress + target);
-
+            //Öppnar en connection mellan vår klient och server med hjälp av vår url
             connection = (HttpURLConnection) url.openConnection();
+            //Sätter RequestMethod till "POST" för att kunna ändra i ett befintligt blog inlägg med ändringar i meddelande bodyn.
             connection.setRequestMethod("POST");
+            //Bestämmer att det är json data som ska skickas
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            //Bestämmer att vi ska ha en output på vår connection
             connection.setDoOutput(true);
 
-
-            //Skapa en output stream som skriver till vår connection, och skriver om vårt objekt till Json data och bytes med angiven teckenuppsättning
+            //Skapar en output stream till vår connection, gör om vår post till Json sen Bytes och sparar det i en Array av bytes
             try (OutputStream os = connection.getOutputStream()) {
-
                 byte[] input = updatedBlogPost.toJson().getBytes(StandardCharsets.UTF_8);
+                // Skriver vår input till vår connection
                 os.write(input, 0, input.length);
             }
 
-            //Används en int för att ta emot en response-code som bestämmer om allt gick bra eller om ett fel inträffade.
+            //Tar emot en statuskod från servern och sparar den i status
             int status = connection.getResponseCode();
 
+            //Kollar om statuskoden är OK, om ja så returneras true annars false
+            //Ska undersöka customException för att kunna ge ett svar på varje statuskod.
             if (status == 200) {
                 success = true;
-                //Ska undersöka customException för att kunna ge ett svar på varje statuskod.
             } else if (status == 400) {
                 System.out.println(ConsoleColors.BLACK_BOLD + "=========================================================" + ConsoleColors.RESET);
                 System.out.println(ConsoleColors.RED_BOLD + "Couldn't update this post, missing mandatory information!" + ConsoleColors.RESET);
