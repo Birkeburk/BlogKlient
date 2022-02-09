@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class BlogProgram {
     private ApiClient myApiClient;
 
-    //Konstruktor som skapar ett objekt av ApiClient classen med vår url
+    //Konstruktor som skapar ett objekt av ApiClient klassen med vår url
     public BlogProgram() {
         myApiClient = new ApiClient("http://127.0.0.1:8080/api/v1/blog");
     }
@@ -50,8 +50,17 @@ public class BlogProgram {
 
     //Metod för att visa alla blog inlägg
     public void viewAllPosts() {
-        myApiClient.listBlogPosts();
+        BlogPost[] myPosts = myApiClient.listBlogPosts();
 
+        if (myPosts.length > 0) {
+            for (int i = 0; i < myPosts.length; i++) {
+                System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
+                System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", myPosts[i].id, myPosts[i].title, myPosts[i].body + ConsoleColors.RESET);
+            }
+        } else {
+            System.out.println(ConsoleColors.BLACK_BOLD + "===============================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED_BOLD + "You don't have any posts at this point in time!");
+        }
     }
 
     //Metod för att visa ett blog inlägg
@@ -62,7 +71,15 @@ public class BlogProgram {
 
         int id = getUserInt();
 
-        myApiClient.viewBlogPost(id);
+        BlogPost myPost = myApiClient.viewBlogPost(id);
+
+        if(myPost != null) {
+            System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
+            System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", myPost.getID(), myPost.getTitle(), myPost.getBody() + ConsoleColors.RESET);
+        } else {
+            System.out.println(ConsoleColors.BLACK_BOLD + "===================================================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED_BOLD + "Couldn't display post with ID[" + id + "] because it doesn't exist!" + ConsoleColors.RESET);
+        }
     }
 
     //Metod för att uppdatera ett blog inlägg
@@ -85,7 +102,14 @@ public class BlogProgram {
 
         BlogPost updatedPost = new BlogPost(userChoice, title, body);
 
-        myApiClient.updateBlogPost(updatedPost, userChoice);
+        boolean successful = myApiClient.updateBlogPost(updatedPost, userChoice);
+
+        if(successful) {
+            System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully updated!" + ConsoleColors.RESET);
+        } else {
+
+        }
     }
 
     //Metod för att radera ett blog inlägg
@@ -96,7 +120,15 @@ public class BlogProgram {
 
         int userChoice = getUserInt();
 
-        myApiClient.deleteBlogPost(userChoice);
+        boolean successful = myApiClient.deleteBlogPost(userChoice);
+
+        if(successful) {
+            System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully deleted!" + ConsoleColors.RESET);
+        } else {
+            System.out.println(ConsoleColors.BLACK_BOLD + "=================================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED_BOLD + "Couldn't delete post, because post doesn't exist!" + ConsoleColors.RESET);
+        }
     }
 
     //Metod för att skapa ett blog inlägg
@@ -115,7 +147,15 @@ public class BlogProgram {
 
         BlogPost newBlogPost = new BlogPost(title, body);
 
-        myApiClient.createBlogPost(newBlogPost);
+        boolean successful = myApiClient.createBlogPost(newBlogPost);
+
+        if(successful) {
+            System.out.println(ConsoleColors.BLACK_BOLD + "=========================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully uploaded!" + ConsoleColors.RESET);
+        } else {
+            System.out.println(ConsoleColors.BLACK_BOLD + "=========================================================" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED_BOLD + "Couldn't create this post, missing mandatory information!" + ConsoleColors.RESET);
+        }
     }
 
     //Metod för att at emot en string av användaren

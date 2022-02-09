@@ -33,15 +33,18 @@ public class BlogPost implements Jsonable {
         }
     }
 
+    //Tom konstruktor
     public BlogPost() {
 
     }
 
+    //Overloaded konstruktor, till för när man ska skapa ett nytt inlägg (Objekt av denna klass)
     public BlogPost(String title, String body) {
         this.title = title;
         this.body = body;
     }
 
+    //Overloaded konstruktor, till för att man ska kunna uppdatera ett inlägg
     public BlogPost(int id, String title, String body) {
         this.id = id;
         this.title = title;
@@ -72,6 +75,7 @@ public class BlogPost implements Jsonable {
     }
 
     @Override
+    //Skriver om Java objekt till json
     public void toJson(final Writer writable) throws IOException {
         try {
             final JsonObject json = new JsonObject();
@@ -85,6 +89,7 @@ public class BlogPost implements Jsonable {
     }
 
     @Override
+    //Skriver om Json till en sträng
     public String toString() {
         return "BlogPost{" +
                 "id=" + id +

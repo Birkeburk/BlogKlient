@@ -24,9 +24,11 @@ public class ApiClient {
     }
 
     //Metod för att radera ett befintligt blog inlägg
-    public void deleteBlogPost(int id) {
+    public boolean deleteBlogPost(int id) {
         //Sträng för att kunna slutföra "url"
         String target = "/delete/" + id;
+
+        boolean success = false;
 
         try {
             //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna radera ett blog inlägg
@@ -40,17 +42,14 @@ public class ApiClient {
             int status = connection.getResponseCode();
 
             if (status == 200) {
-                System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
-                System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully deleted!" + ConsoleColors.RESET);
-            } else if (status == 404) {
-                System.out.println(ConsoleColors.BLACK_BOLD + "=================================================" + ConsoleColors.RESET);
-                System.out.println(ConsoleColors.RED_BOLD + "Couldn't delete post, because post doesn't exist!" + ConsoleColors.RESET);
+                success = true;
             }
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            e.printStackTrace();
         } finally {
             connection.disconnect();
         }
+        return success;
     }
 
     //Metod för att visa lista på alla blog inlägg
@@ -101,15 +100,6 @@ public class ApiClient {
 
             blogPosts = mapper.readValue(jsonStr, BlogPost[].class);
 
-            if (blogPosts.length > 0) {
-                for (int i = 0; i < blogPosts.length; i++) {
-                    System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
-                    System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", blogPosts[i].id, blogPosts[i].title, blogPosts[i].body + ConsoleColors.RESET);
-                }
-            } else {
-                System.out.println(ConsoleColors.BLACK_BOLD + "===============================================" + ConsoleColors.RESET);
-                System.out.println(ConsoleColors.RED_BOLD + "You don't have any posts at this point in time!" + ConsoleColors.RESET);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -149,8 +139,6 @@ public class ApiClient {
                 }
                 reader.close();
             } else {
-                System.out.println(ConsoleColors.BLACK_BOLD + "===================================================================" + ConsoleColors.RESET);
-                System.out.println(ConsoleColors.RED_BOLD + "Couldn't display post with ID[" + id + "] because it doesn't exist!" + ConsoleColors.RESET);
                 return null;
             }
             String jsonStr = responseContent.toString();
@@ -158,12 +146,8 @@ public class ApiClient {
             ObjectMapper mapper = new ObjectMapper();
             fetchedPost = mapper.readValue(jsonStr, BlogPost.class);
 
-
-            System.out.println(ConsoleColors.BLACK_BOLD + "==================================" + ConsoleColors.RESET);
-            System.out.printf(ConsoleColors.GREEN_BOLD + "[ID:%d]\n%s\n\n%s\n", fetchedPost.getID(), fetchedPost.getTitle(), fetchedPost.getBody() + ConsoleColors.RESET);
-
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            e.printStackTrace();
         } finally {
             connection.disconnect();
         }
@@ -171,9 +155,11 @@ public class ApiClient {
     }
 
     //Metod för att skapa nya blog inlägg
-    public void createBlogPost(BlogPost newBlogPost) {
+    public boolean createBlogPost(BlogPost newBlogPost) {
         //Sträng för att kunna slutföra "url"
         String target = "/create";
+
+        boolean success = false;
 
         try {
             //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna skapa ett blogg inlägg
@@ -196,24 +182,23 @@ public class ApiClient {
             int status = connection.getResponseCode();
 
             if (status == 201) {
-                System.out.println(ConsoleColors.BLACK_BOLD + "=========================================" + ConsoleColors.RESET);
-                System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully uploaded!" + ConsoleColors.RESET);
-            } else if (status == 400) {
-                System.out.println(ConsoleColors.BLACK_BOLD + "=========================================================" + ConsoleColors.RESET);
-                System.out.println(ConsoleColors.RED_BOLD + "Couldn't create this post, missing mandatory information!" + ConsoleColors.RESET);
+                success = true;
             }
         } catch (Exception e) {
             System.out.println(ConsoleColors.BLACK_BOLD + "=================================================" + ConsoleColors.RESET);
-            System.out.println(ConsoleColors.RED_BOLD + "Exception: " + e + ConsoleColors.RESET);
+            e.printStackTrace();
         } finally {
             connection.disconnect();
         }
+        return success;
     }
 
     //Metod för att uppdatera befintliga blog inlägg
-    public void updateBlogPost(BlogPost updatedBlogPost, int id) {
+    public boolean updateBlogPost(BlogPost updatedBlogPost, int id) {
         //Sträng för att kunna slutföra "url"
         String target = "/update/" + id;
+
+        boolean success = false;
 
         try {
             //En "url" skapas för att skapa en connection mellan klienten och servern för att kunna uppdatera ett blog inlägg
@@ -237,8 +222,8 @@ public class ApiClient {
             int status = connection.getResponseCode();
 
             if (status == 200) {
-                System.out.println(ConsoleColors.BLACK_BOLD + "========================================" + ConsoleColors.RESET);
-                System.out.println(ConsoleColors.GREEN_BOLD + "Your post has been successfully updated!" + ConsoleColors.RESET);
+                success = true;
+                //Ska undersöka customException för att kunna ge ett svar på varje statuskod.
             } else if (status == 400) {
                 System.out.println(ConsoleColors.BLACK_BOLD + "=========================================================" + ConsoleColors.RESET);
                 System.out.println(ConsoleColors.RED_BOLD + "Couldn't update this post, missing mandatory information!" + ConsoleColors.RESET);
@@ -247,9 +232,10 @@ public class ApiClient {
                 System.out.println(ConsoleColors.RED_BOLD + "Couldn't update this post, because this post doesn't exist" + ConsoleColors.RESET);
             }
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            e.printStackTrace();
         } finally {
             connection.disconnect();
         }
+        return success;
     }
 }
